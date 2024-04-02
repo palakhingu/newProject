@@ -11,9 +11,6 @@
                     <div class=" d-flex justify-end mt-4">
                         <v-btn text color="primary" type="submit">submit</v-btn>
                     </div>
-                    <v-snackbar v-model="snackbar" top right :color="getSnackbarColor()" :timeout="timeout">
-                        {{ errMsg }}
-                    </v-snackbar>
                 </v-form>
             </v-col>
         </v-row>
@@ -22,16 +19,12 @@
 
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
 
 export default {
     data() {
         return {
             email: "",
-            snackbar: false,
-            timeout: 3000,
-            errMsg: "",
-            flag: true,
             RequriedRules: {
                 required: (value) => !!value || "This field is Required.",
             },
@@ -39,22 +32,15 @@ export default {
     },
     methods: {
         resetPassword() {
-            axios.get(`http://192.168.1.25:8010/Api/PDMS/ForgotPassword/${this.email}`)
+            // axios.get(`http://192.168.1.25:8010/Api/PDMS/ForgotPassword/${this.email}`)
+            this.$apiService.get(`ForgotPassword/${this.email}`)
                 .then((res) => {
-                    this.errMsg = res.data.Message
-                    this.snackbar = true;
+                    this.$toast.success(res.data.Message)
                 })
                 .catch((err) => {
-                    this.errMsg = err.response.data.Description;
-                    this.snackbar = true;
-                    this.flag = false;
-                    console.log(err);
+                    this.$toast.error(err.response.data.Description)
                 })
         },
-        getSnackbarColor() {
-            return this.flag ? 'success' : 'error';
-        }
-
     }
 
 }

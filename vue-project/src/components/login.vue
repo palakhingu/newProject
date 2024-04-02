@@ -10,16 +10,18 @@
                     <v-text-field :append-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'"
                         :type="visible ? 'text' : 'password'" placeholder="Enter your password" variant="outlined"
                         @click:append-inner="visible = !visible" v-model="password" label="Enter Your Password" requried
-                        :rules="[rules.required, rules.min]" class="mb-5">
+                        :rules="[RequriedRules.required]">
                     </v-text-field>
-                    <router-link to="/forgotPassword" class="text-primary text-decoration-none">Forgot
+                    <router-link to="/forgotPassword" class="text-primary text-decoration-none ">Forgot
                         Password?</router-link>
                     <div class=" d-flex justify-end mt-4 ">
                         <v-btn text color="primary" type="submit">submit</v-btn>
                     </div>
-                    <v-snackbar v-model="snackbar" top right color="error" :timeout="timeout">
-                        {{ errMsg }}
-                    </v-snackbar>
+                    <div class="text-primary mt-4 d-flex justify-center">
+                        don't have an account?
+                        <router-link to="/" class="text-primary font-weight-black ">sign
+                            up</router-link>
+                    </div>
                 </v-form>
 
             </v-col>
@@ -28,21 +30,14 @@
 </template>
 
 <script>
-import AuthService from "@/services/AuthService";
+// import AuthService from "@/services/AuthService";
 
 export default {
     data() {
         return {
             visible: false,
-            rules: {
-                required: (value) => !!value || "This field is Required.",
-                min: (v) => v.length >= 6 || "Min 6 characters",
-            },
             email: "",
             password: "",
-            snackbar: false,
-            timeout: 3000,
-            errMsg: "",
             RequriedRules: {
                 required: (value) => !!value || "This field is Required.",
             },
@@ -50,30 +45,26 @@ export default {
     },
     methods: {
         login() {
-            const token = localStorage.getItem("token");
-            if (token) {
-                this.errMsg = "please log out from your account to log in again";
-                this.snackbar = true;
-                return;
+            const data = {
+                Email: this.email,
+                Password: this.password
             }
-            else {
-                AuthService.login({ Email: this.email, Password: this.password })
-                    .then((response) => {
-                        const token = response.data.Token;
-                        const UserName = response.data.Username;
-                        localStorage.setItem("token", token);
-                        localStorage.setItem("UserName", UserName);
-                        this.$router.push("/home");
-                    })
-                    .catch((error) => {
-                        this.errMsg = error.response.data.Message;
-                        this.snackbar = true;
-                    });
-            }
-
-        },
-    }
+            this.$apiService.post("Login", data)
+                .then((response) => {
+                    const token = response.data.Token;
+                    const UserName = response.data.Username;
+                    localStorage.setItem("token", token);
+                    localStorage.setItem("UserName", UserName);
+                    this.$router.push("/home");
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.$toast.error(error.response.data.Message)
+                });
+        }
+    },
 }
+
 </script>
 
 <style scoped>
