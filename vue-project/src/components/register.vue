@@ -1,7 +1,7 @@
 <template>
     <v-container class="container">
         <v-row justify="center" class="mt-5">
-            <v-col lg="6" md="7" sm="8" class="elevation-5 rounded p-7">
+            <v-col lg="5" md="7" sm="8" class="elevation-5 rounded p-7" xl="4" xs="5">
                 <v-form @submit.prevent="register" style="padding: 10px !important;">
                     <p class="text-center text-h5 mb-5 text-primary font-weight-black">Register</p>
                     <v-row>
@@ -88,14 +88,7 @@ export default {
     },
     methods: {
         getRoles() {
-            // axios
-            //     .get("http://192.168.1.25:8010/Api/PDMS/GetAllRoles")
-            //     .then((res) => {
-            //         this.allRoles = res.data.ServiceObject.map((role) => ({ RoleId: role.RoleId, RoleName: role.RoleName }));
-            //     })
-            //     .catch((error) => {
-            //         console.error("Error fetching tags:", error);
-            //     });
+            // axios.get("http://192.168.1.25:8010/Api/PDMS/GetAllRoles")
             this.$apiService.get("GetAllRoles")
                 .then((res) => {
                     this.allRoles = res.data.ServiceObject.map((role) => ({ RoleId: role.RoleId, RoleName: role.RoleName }));

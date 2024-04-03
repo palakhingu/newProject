@@ -1,7 +1,7 @@
 <template>
     <v-container class="container">
         <v-row class="d-flex justify-center mt-6">
-            <v-col lg="4" md="5" sm="6" class="elevation-5 rounded p-7">
+            <v-col lg="4" xl="3" md="5" sm="7" class="elevation-5 rounded p-7">
                 <v-form @submit.prevent="resetPassword" style="padding: 10px !important;">
                     <p class="text-center text-h5 mb-6 text-primary ">Reset Password</p>
                     <br>

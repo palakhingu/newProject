@@ -21,6 +21,7 @@ app.use(ToastPlugin, {
   position: "top-right",
 });
 app.config.globalProperties.$apiService = ApiService;
+
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!AuthService.getUserInfo()) {

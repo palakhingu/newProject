@@ -3,6 +3,7 @@ import register from "../components/register.vue";
 import login from "../components/login.vue";
 import forgotPassword from "../components/forgotPassword.vue";
 import Home from "@/components/home.vue";
+import AddProduct from "@/components/addProduct.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,12 @@ const router = createRouter({
       path: "/home",
       name: "home",
       component: Home,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/addProduct",
+      name: "Add Product",
+      component: AddProduct,
       meta: { requiresAuth: true },
     },
   ],

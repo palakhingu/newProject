@@ -1,7 +1,7 @@
 <template>
     <v-container class="container">
         <v-row justify="center" class="mt-5">
-            <v-col lg="4" md="5" sm="6" class="elevation-5 rounded p-7 ">
+            <v-col lg="5" xl="3" md="6" sm="6" xs="4" class="elevation-5 rounded p-7 ">
                 <v-form @submit.prevent="login" style="padding: 10px !important;">
                     <p class="text-center text-h5 mb-5 text-primary font-weight-black">Login</p>
                     <v-text-field v-model="email" label="Enter Email" placeholder="Enter Your Email address"

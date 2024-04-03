@@ -55,15 +55,17 @@ export default {
                     </div>
                 </v-list-item>
             </router-link>
+            <v-list-item link>
+                <div class="d-flex">
+                    <v-list-item-icon>
+                        <v-icon>mdi-logout</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title style="margin-left: 10px !important;" @click="logout">log out</v-list-item-title>
+                </div>
+            </v-list-item>
         </v-list>
-        <template v-slot:append>
-            <div class="pa-2">
-                <v-btn block @click="logout" color="primary">
-                    Logout
-                </v-btn>
-            </div>
-        </template>
     </v-navigation-drawer>
+
 </template>
 <style>
 .router-link {

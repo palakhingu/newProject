@@ -4,8 +4,8 @@ const ApiService = {
   get(endPoint, params) {
     return axios.get(`${this.baseURL}/${endPoint}`, { params });
   },
-  post(endPoint, data) {
-    return axios.post(`${this.baseURL}/${endPoint}`, data);
+  post(endPoint, data, auth) {
+    return axios.post(`${this.baseURL}/${endPoint}`, data, auth);
   },
   put(endPoint, data) {
     return axios.put(`${this.baseURL}/${endPoint}`, data);
