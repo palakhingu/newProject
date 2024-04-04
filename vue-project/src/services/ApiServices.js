@@ -1,8 +1,8 @@
 import axios from "axios";
 const ApiService = {
   baseURL: "http://192.168.1.25:8010/Api/PDMS",
-  get(endPoint, params) {
-    return axios.get(`${this.baseURL}/${endPoint}`, { params });
+  get(endPoint, auth) {
+    return axios.get(`${this.baseURL}/${endPoint}`, auth);
   },
   post(endPoint, data, auth) {
     return axios.post(`${this.baseURL}/${endPoint}`, data, auth);

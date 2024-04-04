@@ -1,7 +1,7 @@
 <template>
     <v-container class="container">
         <v-row justify="center" class="mt-5">
-            <v-col lg="6" md="7" sm="8" class="elevation-5 rounded p-7" xl="4" xs="5">
+            <v-col lg="6" md="4" sm="8" class="elevation-5 rounded p-7" xl="4" xs="5">
                 <v-form @submit.prevent="addProduct" style="padding: 10px !important;">
                     <p class="text-center text-h5 mb-5 text-primary">Add Product</p>
                     <v-row class="mt-5">
@@ -65,8 +65,6 @@
                                     </v-card-action>
                                 </v-card>
                             </v-menu>
-
-
                         </v-col>
                         <v-col lg="6">
                             <v-menu :close-on-content-click="false" v-model="ExpiryMenu">
@@ -90,7 +88,6 @@
                                     </v-card-action>
                                 </v-card>
                             </v-menu>
-
                         </v-col>
                     </v-row>
                     <div class=" d-flex justify-end mt-4 ">
@@ -104,7 +101,6 @@
 
 
 <script>
-import axios from "axios"
 
 export default {
 
@@ -159,19 +155,19 @@ export default {
     },
     computed: {
         ManifacturedDateFormatted() {
-            if (!this.ManifacturedDate) return ''; // return empty string if no date selected
+            if (!this.ManifacturedDate) return '';
             const date = new Date(this.ManifacturedDate);
             const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // add leading zero if needed
-            const day = date.getDate().toString().padStart(2, '0'); // add leading zero if needed
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
             return `${year}-${month}-${day}`;
         },
         ExpiryDateFormatted() {
-            if (!this.ExpiryDate) return ''; // return empty string if no date selected
+            if (!this.ExpiryDate) return '';
             const date = new Date(this.ExpiryDate);
             const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // add leading zero if needed
-            const day = date.getDate().toString().padStart(2, '0'); // add leading zero if needed
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
             return `${year}-${month}-${day}`;
         }
     }

@@ -5,6 +5,7 @@ export default {
     data() {
         return {
             drawer: false,
+            access: false
         };
     },
     methods: {
@@ -12,6 +13,11 @@ export default {
             AuthService.logout();
             this.$router.push("/login");
         },
+    },
+    computed: {
+        access() {
+            return localStorage.getItem("token") ? true : false;
+        }
     },
 };
 </script>
@@ -21,6 +27,9 @@ export default {
         <router-link to="/" class="router-link"><v-toolbar-title>My App</v-toolbar-title></router-link>
         <v-spacer></v-spacer>
         <router-link to="/home" class="router-link"><v-btn text>Home</v-btn></router-link>
+        <router-link to="/addProduct" class="router-link" v-if="access"><v-btn text>Add Product</v-btn></router-link>
+        <router-link to="/displayProduct" class="router-link" v-if="access"><v-btn text>Display
+                Product</v-btn></router-link>
         <v-btn text @click="logout">Logout</v-btn>
     </v-app-bar>
     <v-navigation-drawer v-model="drawer">
