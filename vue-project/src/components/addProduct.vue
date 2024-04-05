@@ -37,9 +37,10 @@
                             </v-text-field>
                         </v-col>
                         <v-col lg="6">
-                            <v-file-input variant="outlined" label="Add Image" placeholder="Add Image" chips
+                            <v-file-input variant="outlined" :label="Image || 'Add Image'" placeholder="Add Image" chips
                                 append-inner-icon="mdi-paperclip" prepend-icon="" :rules="[RequriedRules.required]"
-                                v-model="Image"></v-file-input>
+                                v-model="selectedFile" @change="handleFileUpload"></v-file-input>
+
                         </v-col>
                     </v-row>
                     <v-row>
@@ -120,39 +121,47 @@ export default {
             Price: "",
             Quantity: "",
             BuckleNumber: "",
-            Image: [],
+            selectedFile: null, // Store the selected file
+            Image: '',
         }
     },
 
 
     methods: {
         addProduct() {
-            const ProductData = {
-                ProductName: this.ProductName,
-                ProductDescription: this.Description,
-                Price: this.Price,
-                BuckleNumber: this.BuckleNumber,
-                Quantity: this.Quantity,
-                CategoryId: "7816629d-27d6-4128-a430-6ef7d6b5c14b",
-                Image: this.Image[0].name,
-                ManifacturedAt: this.ManifacturedDateFormatted,
-                ExpireAt: this.ExpiryDateFormatted,
+            console.log(this.Image);
+            const formData = new FormData();
+            formData.append('ProductName', this.ProductName);
+            formData.append('ProductDescription', this.Description);
+            formData.append('Price', this.Price);
+            formData.append('BuckleNumber', this.BuckleNumber);
+            formData.append('Quantity', this.Quantity);
+            formData.append('CategoryId', "7816629d-27d6-4128-a430-6ef7d6b5c14b");
+            formData.append('Image', this.Image);
+            formData.append('ManifacturedAt', this.ManifacturedDateFormatted);
+            formData.append('ExpireAt', this.ExpiryDateFormatted);
 
-            }
-            this.$apiService.post("AddNewProduct", ProductData, {
+            this.$apiService.post("AddNewProduct", formData, {
                 headers: {
+                    'Content-Type': 'multipart/form-data',
                     'Authorization': localStorage.getItem("token"),
                 }
             }).then((res) => {
                 console.log(res);
-            })
-                .catch((err) => {
-                    console.log(err);
-                })
-            console.log(ProductData);
+            }).catch((err) => {
+                console.log(err);
+            });
+            console.log(formData);
         },
+        handleFileUpload(event) {
 
+            if (event.target.files.length > 0) {
+                this.Image = event.target.files[0];
+            }
+
+        }
     },
+
     computed: {
         ManifacturedDateFormatted() {
             if (!this.ManifacturedDate) return '';

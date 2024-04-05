@@ -1,7 +1,7 @@
 <template>
     <v-container class="container">
         <v-row justify="center" class="mt-5">
-            <v-col lg="12" xl="9" md="10" sm="10">
+            <v-col lg="12" xl="9" md="12" sm="12">
                 <v-row justify="end">
                     <v-col lg="2">
                         <v-text-field v-model="itemsPerPage" class="pa-2" label="Products per page" max="15" min="1"
@@ -13,7 +13,7 @@
                             label="Search" placholder="Search"></v-text-field>
                     </v-col>
                 </v-row>
-                <v-table fixed-header v-if="serverItems.length > 0" class="rounded eval" height="450">
+                <v-table fixed-header v-if="!noData" class="rounded eval" height="450">
                     <thead>
                         <tr>
                             <th class="tex-center text-h6 text-white" style="background-color:#3B71CA ;">
@@ -51,7 +51,7 @@
                 </v-table>
 
                 <div v-else class="text-center">
-                    No data available
+                    {{ noData }}
                 </div>
                 <br>
 
@@ -73,27 +73,34 @@ export default {
         return {
             page: 1,
             itemsPerPage: 5,
-            totalItems: 0,
             serverItems: [],
             pages: 0,
-            search: ""
+            search: "",
+            noData: ""
         };
     },
     methods: {
         loadItems() {
-            console.log(this.page);
             this.$apiService
                 .get(`GetDynamicProductList/${this.page}/${this.itemsPerPage}/?searchText=${this.search}`, {
                     headers: { Authorization: localStorage.getItem("token") },
                 })
                 .then((res) => {
                     console.log(res);
-                    this.serverItems = res.data.ServiceObject.Result;
-                    this.totalItems = res.data.ServiceObject.TotalCount;
-                    this.pages = res.data.ServiceObject.Pages;
+                    if (res.statusText === "OK" && res.status === 200) {
+                        this.serverItems = res.data.ServiceObject.Result;
+                        this.pages = res.data.ServiceObject.Pages;
+                        this.noData = null;
+                    }
+                    else if (res.statusText === "No Content" && res.status === 204) {
+                        this.noData = "No Data Available";
+                        this.serverItems = [];
+                    } else {
+                        this.noData = res.statusText
+                    }
                 })
                 .catch((error) => {
-                    console.error(error);
+                    console.log(error);
                 });
         },
     },
