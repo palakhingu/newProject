@@ -55,7 +55,7 @@ export default {
                     const UserName = response.data.Username;
                     localStorage.setItem("token", token);
                     localStorage.setItem("UserName", UserName);
-                    this.$router.push("/home");
+                    this.$router.push("/products");
                 })
                 .catch((error) => {
                     console.log(error);

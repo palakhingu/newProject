@@ -1,7 +1,7 @@
 <template>
     <v-container class="container">
         <v-row justify="center" class="mt-5">
-            <v-col lg="6" md="4" sm="8" class="elevation-5 rounded p-7" xl="4" xs="5">
+            <v-col lg="6" md="8" sm="9" class="elevation-5 rounded p-7" xl="4" xs="5">
                 <v-form @submit.prevent="addProduct" style="padding: 10px !important;">
                     <p class="text-center text-h5 mb-5 text-primary">Add Product</p>
                     <v-row class="mt-5">
@@ -11,11 +11,20 @@
                             </v-text-field>
                         </v-col>
                         <v-col lg="6">
-                            <v-text-field label="Enter Product Description" placeholder="Enter Product Description"
-                                type="text" variant="outlined" :rules="[RequriedRules.required]" required
-                                v-model="Description">
-                            </v-text-field>
+                            <v-select v-model="selectedCategory" :item-props="itemProp" :items="allCategories"
+                                label="Select Category" variant="outlined" chips required
+                                :rules="[RequriedRules.required]">
+                            </v-select>
                         </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-textarea label="Enter Product Description" variant="outlined" auto-grow rows="3"
+                                :rules="[RequriedRules.required]" v-model="Description" required
+                                placeholder="Enter Product Description"></v-textarea>
+                        </v-col>
+
+
                     </v-row>
                     <v-row>
                         <v-col lg="6">
@@ -37,7 +46,7 @@
                             </v-text-field>
                         </v-col>
                         <v-col lg="6">
-                            <v-file-input variant="outlined" :label="Image || 'Add Image'" placeholder="Add Image" chips
+                            <v-file-input variant="outlined" label='Add Image' placeholder="Add Image" chips
                                 append-inner-icon="mdi-paperclip" prepend-icon="" :rules="[RequriedRules.required]"
                                 v-model="selectedFile" @change="handleFileUpload"></v-file-input>
 
@@ -91,8 +100,13 @@
                             </v-menu>
                         </v-col>
                     </v-row>
+                    <v-row justify="center">
+                        <v-col lg="6" sm="6" md="6">
+
+                        </v-col>
+                    </v-row>
                     <div class=" d-flex justify-end mt-4 ">
-                        <v-btn text color="primary" type="submit">submit</v-btn>
+                        <v-btn text color="primary" type="submit" size="large">submit</v-btn>
                     </div>
                 </v-form>
             </v-col>
@@ -104,6 +118,12 @@
 <script>
 
 export default {
+    mounted() {
+        this.getCategories();
+        if (this.$route.params.id) {
+            this.updateProduct()
+        }
+    },
 
 
     data() {
@@ -121,44 +141,117 @@ export default {
             Price: "",
             Quantity: "",
             BuckleNumber: "",
-            selectedFile: null, // Store the selected file
-            Image: '',
+            selectedFile: [],
+            Image: [],
+            allCategories: [],
+            selectedCategory: []
         }
     },
 
 
     methods: {
         addProduct() {
-            console.log(this.Image);
+            if (this.$route.params.id) {
+                this.update(this.$route.params.id)
+            }
+            else {
+                console.log(this.Image);
+                const formData = new FormData();
+                formData.append('ProductName', this.ProductName);
+                formData.append('ProductDescription', this.Description);
+                formData.append('Price', this.Price);
+                formData.append('BuckleNumber', this.BuckleNumber);
+                formData.append('Quantity', this.Quantity);
+                formData.append('CategoryId', this.selectedCategory);
+                formData.append('Image', this.Image);
+                formData.append('ManifacturedAt', this.ManifacturedDateFormatted);
+                formData.append('ExpireAt', this.ExpiryDateFormatted);
+                this.$apiService.post("AddNewProduct", formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': localStorage.getItem("token")
+                    }
+                }).then((res) => {
+                    console.log(res);
+                }).catch((err) => {
+                    console.log(err);
+                });
+            }
+        },
+        update(id) {
             const formData = new FormData();
+            formData.append('ProductId', id);
             formData.append('ProductName', this.ProductName);
             formData.append('ProductDescription', this.Description);
             formData.append('Price', this.Price);
             formData.append('BuckleNumber', this.BuckleNumber);
             formData.append('Quantity', this.Quantity);
-            formData.append('CategoryId', "7816629d-27d6-4128-a430-6ef7d6b5c14b");
+            formData.append('CategoryId', this.selectedCategory);
             formData.append('Image', this.Image);
             formData.append('ManifacturedAt', this.ManifacturedDateFormatted);
             formData.append('ExpireAt', this.ExpiryDateFormatted);
-
-            this.$apiService.post("AddNewProduct", formData, {
+            this.$apiService.post("UpdateProduct", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Authorization': localStorage.getItem("token"),
+                    'Authorization': localStorage.getItem("token")
                 }
             }).then((res) => {
                 console.log(res);
             }).catch((err) => {
                 console.log(err);
             });
-            console.log(formData);
         },
         handleFileUpload(event) {
-
             if (event.target.files.length > 0) {
                 this.Image = event.target.files[0];
+                this.selectedFile = this.Image.name
             }
 
+        },
+        getCategories() {
+            this.$apiService.get("GetAllCategories", {
+                headers: {
+                    'Authorization': localStorage.getItem("token")
+                }
+            })
+                .then((res) => {
+                    this.allCategories = res.data.map((category) => ({ CategoryId: category.CategoryId, CategoryName: category.CategoryName }));
+                })
+                .catch((error) => {
+                    console.error("Error fetching tags:", error);
+                });
+        },
+        itemProp(item) {
+            return {
+                title: item.CategoryName,
+                value: item.CategoryId,
+            }
+        },
+        updateProduct() {
+            const ProductId = this.$route.params.id;
+            if (ProductId) {
+                this.$apiService.get(`GetProductById?ProductId=${ProductId}`, {
+                    headers: {
+                        'authorization': localStorage.getItem("token")
+                    }
+                })
+                    .then((res) => {
+                        console.log(res);
+                        const product = res.data[0];
+                        this.ProductName = product.ProductName;
+                        this.Description = product.ProductDescription;
+                        this.Price = product.Price;
+                        this.Quantity = product.Quantity;
+                        this.BuckleNumber = product.BuckleNumber;
+                        this.selectedCategory = product.CategoryId;
+                        this.ManifacturedDate = new Date(product.ManifacturedAt);
+                        this.ExpiryDate = new Date(product.ExpireAt);
+
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    })
+            }
         }
     },
 
@@ -179,9 +272,9 @@ export default {
             const day = date.getDate().toString().padStart(2, '0');
             return `${year}-${month}-${day}`;
         }
-    }
-}
+    },
 
+}
 </script>
 <style scoped>
 .container {

@@ -1,11 +1,12 @@
 <template>
     <v-container class="container">
         <v-row justify="center">
-            <v-col v-for="(product, index) in ServiceObject" :key="product.ProductId" cols="auto" class="cards">
-                <v-card class="mx-auto elevation-5 " width="280" height="360">
+            <v-col v-for="(product, index) in ServiceObject" :key="product.ProductId" cols="auto" class="cards"
+                @click="redirect(product.ProductId)">
+                <v-card class="mx-auto elevation-5 " width="280" height="390">
                     <v-card-item>
                         <div class="d-flex justify-center">
-                            <img :src="getImageUrl(product.Image)" width="220" height="210" class="mt-4"></img>
+                            <v-img :src="getImageUrl(product.Image)" width="250" height="250" class="mt-4" contain></v-img>
 
                         </div>
                         <div>
@@ -27,7 +28,7 @@ export default {
     data() {
         return {
             ServiceObject: [],
-            baseUrl: 'http://192.168.1.25:8010/' // Replace this with your actual base URL
+            baseUrl: 'http://192.168.1.25:8010/'
         }
     },
     mounted() {
@@ -50,7 +51,9 @@ export default {
         },
         getImageUrl(imagePath) {
             return this.baseUrl + imagePath.replace(/\\/g, '/');
-
+        },
+        redirect(id) {
+            this.$router.push(`productDetails/${id}`)
         }
     }
 }
@@ -65,5 +68,3 @@ export default {
     margin: 30px;
 }
 </style>
-
-

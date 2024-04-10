@@ -26,7 +26,7 @@ export default {
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
         <router-link to="/" class="router-link"><v-toolbar-title>My App</v-toolbar-title></router-link>
         <v-spacer></v-spacer>
-        <router-link to="/home" class="router-link"><v-btn text>Home</v-btn></router-link>
+        <router-link to="/products" class="router-link"><v-btn text>Products</v-btn></router-link>
         <router-link to="/addProduct" class="router-link" v-if="access"><v-btn text>Add Product</v-btn></router-link>
         <router-link to="/displayProduct" class="router-link" v-if="access"><v-btn text>Display
                 Product</v-btn></router-link>

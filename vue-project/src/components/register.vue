@@ -57,7 +57,6 @@
 </template>
 
 <script>
-// import axios from "axios"
 export default {
 
     data() {
@@ -88,10 +87,10 @@ export default {
     },
     methods: {
         getRoles() {
-            // axios.get("http://192.168.1.25:8010/Api/PDMS/GetAllRoles")
             this.$apiService.get("GetAllRoles")
                 .then((res) => {
-                    this.allRoles = res.data.ServiceObject.map((role) => ({ RoleId: role.RoleId, RoleName: role.RoleName }));
+                    console.log(res);
+                    this.allRoles = res.data.map((role) => ({ RoleId: role.RoleId, RoleName: role.RoleName }));
                 })
                 .catch((error) => {
                     console.error("Error fetching tags:", error);
@@ -113,7 +112,6 @@ export default {
                 Contact: this.Contact,
                 RoleId: this.selectedRole
             }
-            // axios.post("http://192.168.1.25:8010/Api/PDMS/RegisterNewUser", userData)
             this.$apiService.post("RegisterNewUser", userData)
                 .then((res) => {
                     if (res.StatusCode = 200) {
