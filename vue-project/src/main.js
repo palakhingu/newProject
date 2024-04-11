@@ -11,6 +11,7 @@ import ToastPlugin from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-bootstrap.css";
 import ApiService from "./services/ApiServices";
 const app = createApp(App);
+
 const vuetify = createVuetify({
   components,
   directives,
@@ -34,8 +35,8 @@ router.beforeEach((to, from, next) => {
   } else if (to.fullPath == "/login") {
     if (AuthService.getUserInfo()) {
       next({
-        path: "/home",
-      })
+        path: "/products",
+      });
     } else {
       next();
     }

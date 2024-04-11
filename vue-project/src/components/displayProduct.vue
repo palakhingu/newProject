@@ -1,7 +1,7 @@
 <template>
     <v-container class="container">
-        <v-row justify="center" class="mt-5 row">
-            <v-col xl=11 lg="12" md=12 sm="12">
+        <v-row justify="center" class="mt-5">
+            <v-col xl=10 lg="12" md=12 sm="12">
                 <v-row justify="end">
                     <v-col lg="2">
                         <v-text-field v-model="itemsPerPage" class="pa-2" label="Products per page" max="100" min="1"
@@ -12,7 +12,8 @@
                             label="Search" placholder="Search"></v-text-field>
                     </v-col>
                 </v-row>
-                <v-table fixed-header v-if="!noData" class="rounded elevation-5 text-subtitle-1" height="550">
+                <v-table fixed-header v-if="!noData" class="rounded elevation-5 text-subtitle-1" height="500"
+                    density="default">
                     <thead>
                         <tr>
                             <th class="tex-center text-h6 text-white" style="background-color:#3B71CA ;">
@@ -36,14 +37,17 @@
                     <br>
                     <tbody>
                         <tr v-for="(product) in serverItems">
-                            <td class="text-center">{{ product.ProductName }}</td>
-                            <td class="text-center">{{ product.ProductDescription }}</td>
+                            <td class="text-center ">{{ product.ProductName }}</td>
+                            <td class="text-center ">{{ product.ProductDescription }}</td>
                             <td class="text-center">{{ product.Price }}</td>
                             <td class="text-center">{{ product.Quantity }}</td>
                             <td>
-                                <v-btn color="success"
-                                    @click="() => this.$router.push(`/addProduct/${product.ProductId}`)">Update</v-btn>
-                                <v-btn color="error" @click="this.delete(product.ProductId)">delete</v-btn>
+                                <div class="d-flex">
+                                    <v-btn color="success" class="mr-3"
+                                        @click="updateProduct(product.ProductId)">Update</v-btn>
+                                    <v-btn color="error" @click="this.delete(product.ProductId)">delete</v-btn>
+                                </div>
+
                             </td>
                         </tr>
                     </tbody>
@@ -67,9 +71,6 @@
 
 </template>
 <script>
-import axios from 'axios';
-
-
 export default {
     data() {
         return {
@@ -83,20 +84,19 @@ export default {
     },
     methods: {
         delete(id) {
-
-            console.log(id);
             this.$apiService.delete(`DeleteProduct?ProductId=${id}`,
                 {
                     headers: { Authorization: localStorage.getItem("token") },
                 })
                 .then((res) => {
-                    console.log(res);
                     this.loadItems();
-
                 })
                 .catch((err) => {
                     console.log(err);
                 })
+        },
+        updateProduct(productId) {
+            this.$router.push(`/addProduct/${productId}`);
         },
         loadItems() {
             this.$apiService
@@ -121,7 +121,6 @@ export default {
                     console.log(error);
                 });
         },
-
     },
     mounted() {
         this.loadItems();
@@ -134,8 +133,8 @@ export default {
     margin-top: 35px;
 }
 
-.row {
-    margin: 100px,
-
+v-table {
+    padding: 10px;
 }
 </style>
+

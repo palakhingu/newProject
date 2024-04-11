@@ -5,7 +5,9 @@ export default {
     data() {
         return {
             drawer: false,
-            access: false
+            access: false,
+            cartDrawer: false,
+           
         };
     },
     methods: {
@@ -13,6 +15,8 @@ export default {
             AuthService.logout();
             this.$router.push("/login");
         },
+
+
     },
     computed: {
         access() {
@@ -23,7 +27,7 @@ export default {
 </script>
 <template>
     <v-app-bar color="primary" class="text-white">
-        <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <router-link to="/" class="router-link"><v-toolbar-title>My App</v-toolbar-title></router-link>
         <v-spacer></v-spacer>
         <router-link to="/products" class="router-link"><v-btn text>Products</v-btn></router-link>
@@ -31,8 +35,14 @@ export default {
         <router-link to="/displayProduct" class="router-link" v-if="access"><v-btn text>Display
                 Product</v-btn></router-link>
         <v-btn text @click="logout">Logout</v-btn>
+        <v-btn class="text-none" stacked size="large" @click.stop="cartDrawer = !cartDrawer">
+            <v-badge color="success" content="0">
+                <v-icon size="large">mdi-cart</v-icon>
+
+            </v-badge>
+        </v-btn>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer">
+    <v-navigation-drawer v-model="drawer" temporary>
         <v-list>
             <router-link to="/" class="router-link">
                 <v-list-item link>
@@ -74,7 +84,8 @@ export default {
             </v-list-item>
         </v-list>
     </v-navigation-drawer>
-
+    <v-navigation-drawer v-model="cartDrawer" temporary location="right" width="500">
+    </v-navigation-drawer>
 </template>
 <style>
 .router-link {

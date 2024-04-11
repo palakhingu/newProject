@@ -1,22 +1,33 @@
 <template>
     <v-container class="container">
         <v-row justify="center">
-            <v-col v-for="(product, index) in ServiceObject" :key="product.ProductId" cols="auto" class="cards"
-                @click="redirect(product.ProductId)">
-                <v-card class="mx-auto elevation-5 " width="280" height="390">
+            <v-col v-for="(product, index) in ServiceObject" :key="product.ProductId" cols="auto" class="cards">
+                <v-card class="mx-auto elevation-5 " width="280" max-height="450">
                     <v-card-item>
                         <div class="d-flex justify-center">
-                            <v-img :src="getImageUrl(product.Image)" width="250" height="250" class="mt-4" contain></v-img>
-
+                            <v-img :src="getImageUrl(product.Image)" width="220" height="230" class="mt-4"
+                                contain></v-img>
                         </div>
                         <div>
-                            <div class="mt-3 mb-4 font-weight-bold text-center text-body-1">
+                            <div class="mt-4 mb-4 font-weight-bold text-center text-capitalize "
+                                style="font-size: 19px;">
                                 {{ product.ProductName }}
                             </div>
-                            <div class="text-subtitle-1 mb-">₹ {{ product.Price }}</div>
-                            <div class="text-subtitle-1">Quantity: {{ product.Quantity }}</div>
+                            <div class="d-flex ml-4 mr-4 mb-5 justify-space-between">
+                                <p class="font-weight-medium "> ₹ {{ product.Price }}</p>
+                                <p class="font-weight-medium">
+                                    Quantity: {{ product.Quantity }}
+                                </p>
+                            </div>
+                            <div class="d-flex justify-center">
+                                <v-btn color="primary" @click="redirect(product.ProductId)" size="small" rounded="xl"
+                                    class="font-weight-bold" elevation="1" variant="outlined">More Details</v-btn>
+                            </div>
                         </div>
                     </v-card-item>
+                    <v-card-actions class="justify-end">
+                        <v-btn color="primary" @click="handleAddToCart(product)">Add to Cart</v-btn>
+                    </v-card-actions>
                 </v-card>
             </v-col>
         </v-row>
@@ -24,7 +35,9 @@
 </template>
 
 <script>
+
 export default {
+
     data() {
         return {
             ServiceObject: [],
@@ -54,7 +67,12 @@ export default {
         },
         redirect(id) {
             this.$router.push(`productDetails/${id}`)
+        },
+        handleAddToCart(product) {
+            this.$toast.success("Product added to cart successfully");
+            this.$emit("addToCart", product)
         }
+
     }
 }
 </script>
@@ -66,5 +84,11 @@ export default {
 
 .cards {
     margin: 30px;
+    transition: all 0.1s ease-out;
+}
+
+.cards:hover {
+    transform: translateY(-5px);
 }
 </style>
+

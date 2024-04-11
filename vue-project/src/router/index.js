@@ -34,19 +34,19 @@ const router = createRouter({
     },
     {
       path: "/addProduct",
-      name: "Add Product",
+      name: "AddProduct",
       component: AddProduct,
       meta: { requiresAuth: true },
     },
     {
       path: "/addProduct/:id",
-      name: "update Product",
+      name: "updateProduct",
       component: AddProduct,
       meta: { requiresAuth: true },
     },
     {
       path: "/displayProduct",
-      name: "Display Product",
+      name: "displayProduct",
       component: DisplayProduct,
       meta: { requiresAuth: true },
     },

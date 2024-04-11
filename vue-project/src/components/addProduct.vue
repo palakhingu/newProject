@@ -1,8 +1,8 @@
 <template>
     <v-container class="container">
         <v-row justify="center" class="mt-5">
-            <v-col lg="6" md="8" sm="9" class="elevation-5 rounded p-7" xl="4" xs="5">
-                <v-form @submit.prevent="addProduct" style="padding: 10px !important;">
+            <v-col lg="6" md="8" sm="8" class="elevation-5 rounded p-7" xl="4" xs="5">
+                <v-form @submit.prevent="addProduct" style="padding: 10px !important">
                     <p class="text-center text-h5 mb-5 text-primary">Add Product</p>
                     <v-row class="mt-5">
                         <v-col lg="6">
@@ -12,7 +12,7 @@
                         </v-col>
                         <v-col lg="6">
                             <v-select v-model="selectedCategory" :item-props="itemProp" :items="allCategories"
-                                label="Select Category" variant="outlined" chips required
+                                label="Select Category" variant="outlined" chips required placeholder="Add Image"
                                 :rules="[RequriedRules.required]">
                             </v-select>
                         </v-col>
@@ -23,8 +23,6 @@
                                 :rules="[RequriedRules.required]" v-model="Description" required
                                 placeholder="Enter Product Description"></v-textarea>
                         </v-col>
-
-
                     </v-row>
                     <v-row>
                         <v-col lg="6">
@@ -47,8 +45,8 @@
                         </v-col>
                         <v-col lg="6">
                             <v-file-input variant="outlined" label='Add Image' placeholder="Add Image" chips
-                                append-inner-icon="mdi-paperclip" prepend-icon="" :rules="[RequriedRules.required]"
-                                v-model="selectedFile" @change="handleFileUpload"></v-file-input>
+                                append-inner-icon="mdi-paperclip" prepend-icon="" v-model:title="Image"
+                                @change="handleFileUpload" clearable></v-file-input>
 
                         </v-col>
                     </v-row>
@@ -102,7 +100,6 @@
                     </v-row>
                     <v-row justify="center">
                         <v-col lg="6" sm="6" md="6">
-
                         </v-col>
                     </v-row>
                     <div class=" d-flex justify-end mt-4 ">
@@ -117,15 +114,8 @@
 
 <script>
 
+
 export default {
-    mounted() {
-        this.getCategories();
-        if (this.$route.params.id) {
-            this.updateProduct()
-        }
-    },
-
-
     data() {
         return {
             visible: false,
@@ -141,72 +131,46 @@ export default {
             Price: "",
             Quantity: "",
             BuckleNumber: "",
-            selectedFile: [],
             Image: [],
             allCategories: [],
             selectedCategory: []
         }
     },
-
-
-    methods: {
-        addProduct() {
-            if (this.$route.params.id) {
-                this.update(this.$route.params.id)
-            }
-            else {
-                console.log(this.Image);
-                const formData = new FormData();
-                formData.append('ProductName', this.ProductName);
-                formData.append('ProductDescription', this.Description);
-                formData.append('Price', this.Price);
-                formData.append('BuckleNumber', this.BuckleNumber);
-                formData.append('Quantity', this.Quantity);
-                formData.append('CategoryId', this.selectedCategory);
-                formData.append('Image', this.Image);
-                formData.append('ManifacturedAt', this.ManifacturedDateFormatted);
-                formData.append('ExpireAt', this.ExpiryDateFormatted);
-                this.$apiService.post("AddNewProduct", formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                        'Authorization': localStorage.getItem("token")
-                    }
-                }).then((res) => {
-                    console.log(res);
-                }).catch((err) => {
-                    console.log(err);
-                });
-            }
+    mounted() {
+        this.getCategories();
+        if (this.$route.params.id) {
+            this.updateForm();
+        }
+    },
+    computed: {
+        ManifacturedDateFormatted() {
+            if (!this.ManifacturedDate) return '';
+            const date = new Date(this.ManifacturedDate);
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
         },
-        update(id) {
-            const formData = new FormData();
-            formData.append('ProductId', id);
-            formData.append('ProductName', this.ProductName);
-            formData.append('ProductDescription', this.Description);
-            formData.append('Price', this.Price);
-            formData.append('BuckleNumber', this.BuckleNumber);
-            formData.append('Quantity', this.Quantity);
-            formData.append('CategoryId', this.selectedCategory);
-            formData.append('Image', this.Image);
-            formData.append('ManifacturedAt', this.ManifacturedDateFormatted);
-            formData.append('ExpireAt', this.ExpiryDateFormatted);
-            this.$apiService.post("UpdateProduct", formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': localStorage.getItem("token")
-                }
-            }).then((res) => {
-                console.log(res);
-            }).catch((err) => {
-                console.log(err);
-            });
+        ExpiryDateFormatted() {
+            if (!this.ExpiryDate) return '';
+            const date = new Date(this.ExpiryDate);
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+    },
+    methods: {
+        DateFormatted(dateInput) {
+            if (!dateInput) return '';
+            const date = new Date(dateInput);
+            const year = date.getFullYear();
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
         },
         handleFileUpload(event) {
-            if (event.target.files.length > 0) {
-                this.Image = event.target.files[0];
-                this.selectedFile = this.Image.name
-            }
-
+            this.Image = event.target.files[0];
         },
         getCategories() {
             this.$apiService.get("GetAllCategories", {
@@ -227,7 +191,54 @@ export default {
                 value: item.CategoryId,
             }
         },
-        updateProduct() {
+        addProduct() {
+            if (this.$route.params.id) {
+                this.update(this.$route.params.id)
+            }
+            else {
+                console.log(this.Image);
+                const formData = {
+                    ProductName: this.ProductName,
+                    ProductDescription: this.Description,
+                    Price: this.Price,
+                    BuckleNumber: this.BuckleNumber,
+                    Quantity: this.Quantity,
+                    CategoryId: this.selectedCategory,
+                    Image: this.Image,
+                    ManifacturedAt: this.ManifacturedDateFormatted,
+                    ExpireAt: this.ExpiryDateFormatted
+                }
+                console.log(formData);
+                this.$apiService.post("AddNewProduct", formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': localStorage.getItem("token")
+                    }
+                }).then((res) => {
+                    console.log(res);
+                    if (res.statusText == "OK" && res.status == 200) {
+                        this.$router.push("/displayProduct")
+                    }
+                }).catch((err) => {
+                    console.log(err.response.data);
+                    err.response.data.map((error) => {
+                        if (error.Parameter == "CategoryId") {
+                            this.$toast.error(error.Description)
+                        }
+                        if (error.Parameter == "Price") {
+                            this.$toast.error(error.Description)
+                        }
+                        if (error.Parameter == "Quantity") {
+                            this.$toast.error(error.Description)
+                        }
+                        if (error.ErrorCode === 90003) {
+                            this.$toast.error(error.Description)
+                        }
+                    })
+                });
+            }
+        },
+        updateForm() {
             const ProductId = this.$route.params.id;
             if (ProductId) {
                 this.$apiService.get(`GetProductById?ProductId=${ProductId}`, {
@@ -246,33 +257,44 @@ export default {
                         this.selectedCategory = product.CategoryId;
                         this.ManifacturedDate = new Date(product.ManifacturedAt);
                         this.ExpiryDate = new Date(product.ExpireAt);
-
+                        this.Image = [{ name: product.Image }];
                     })
                     .catch((err) => {
                         console.log(err);
                     })
             }
-        }
+        },
+        update(id) {
+            const formData = {
+                ProductId: id,
+                ProductName: this.ProductName,
+                ProductDescription: this.Description,
+                Price: this.Price,
+                BuckleNumber: this.BuckleNumber,
+                Quantity: this.Quantity,
+                CategoryId: this.selectedCategory,
+                Image: this.Image,
+                ManifacturedAt: this.ManifacturedDateFormatted,
+                ExpireAt: this.ExpiryDateFormatted
+            }
+            this.$apiService.post("UpdateProduct", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': localStorage.getItem("token")
+                }
+            }).then((res) => {
+                console.log(res);
+                if (res.data.StatusCode === "OK") {
+                    this.$router.push("/displayProduct")
+                }
+            }).catch((err) => {
+                if (err.response.data.ServiceObject.ExceptionMessage === "Object reference not set to an instance of an object.") {
+                    this.$toast.error("please select image for product")
+                }
+            });
+        },
     },
 
-    computed: {
-        ManifacturedDateFormatted() {
-            if (!this.ManifacturedDate) return '';
-            const date = new Date(this.ManifacturedDate);
-            const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const day = date.getDate().toString().padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        },
-        ExpiryDateFormatted() {
-            if (!this.ExpiryDate) return '';
-            const date = new Date(this.ExpiryDate);
-            const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const day = date.getDate().toString().padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-    },
 
 }
 </script>

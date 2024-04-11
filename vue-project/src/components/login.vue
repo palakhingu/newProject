@@ -30,8 +30,6 @@
 </template>
 
 <script>
-// import AuthService from "@/services/AuthService";
-
 export default {
     data() {
         return {
