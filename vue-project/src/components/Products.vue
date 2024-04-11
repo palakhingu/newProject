@@ -35,13 +35,52 @@
 </template>
 
 <script>
-
+import { addToCart } from  './cart'
 export default {
 
     data() {
         return {
             ServiceObject: [],
-            baseUrl: 'http://192.168.1.25:8010/'
+            baseUrl: 'http://192.168.1.25:8010/',
+            cart: [],
+    //         mockProducts: [
+    //     {
+    //       ProductId: 1,
+    //       ProductName: 'Product 1',
+    //       Price: 10,
+    //       Quantity: 5,
+    //       Image: 'path/to/image1.jpg',
+    //     },
+    //     {
+    //       ProductId: 2,
+    //       ProductName: 'Product 2',
+    //       Price: 20,
+    //       Quantity: 3,
+    //       Image: 'path/to/image2.jpg',
+    //     },
+    //     {
+    //       ProductId: 3,
+    //       ProductName: 'Product 3',
+    //       Price: 20,
+    //       Quantity: 3,
+    //       Image: 'path/to/image2.jpg',
+    //     },
+    //     {
+    //       ProductId: 3,
+    //       ProductName: 'Product 4',
+    //       Price: 20,
+    //       Quantity: 3,
+    //       Image: 'path/to/image2.jpg',
+    //     },
+    //     {
+    //       ProductId: 4,
+    //       ProductName: 'Product 5',
+    //       Price: 20,
+    //       Quantity: 3,
+    //       Image: 'path/to/image2.jpg',
+    //     },
+    //     // Add more mock product objects as needed
+    //   ],
         }
     },
     mounted() {
@@ -69,8 +108,8 @@ export default {
             this.$router.push(`productDetails/${id}`)
         },
         handleAddToCart(product) {
+            addToCart(product);
             this.$toast.success("Product added to cart successfully");
-            this.$emit("addToCart", product)
         }
 
     }

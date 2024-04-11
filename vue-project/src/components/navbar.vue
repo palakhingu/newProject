@@ -1,20 +1,50 @@
 <script>
 import AuthService from "../services/AuthService";
-
+import { cart, removeFromCart, incrementQuantity, decrementQuantity } from './cart'
 export default {
     data() {
+
         return {
             drawer: false,
             access: false,
             cartDrawer: false,
+            cart: cart,
+            cartCount: 0,
            
         };
+    },
+    watch: {
+        cart: {
+            handler(newCart) {
+                this.cartCount = newCart.length;
+            },
+            deep: true,
+        },
+    },
+    mounted(){
+        console.log(this.cart);
+        this.cartCount = cart.length;
     },
     methods: {
         logout() {
             AuthService.logout();
             this.$router.push("/login");
         },
+        removeFromCart(index) {
+            removeFromCart(index);
+           this.cart = [...cart];
+        },
+        incrementQuantity(index) {
+            incrementQuantity(index);
+           this.cart = [...cart];
+        },
+        decrementQuantity(index) {
+            decrementQuantity(index);
+           this.cart = [...cart];
+        },
+        calculateSubtotal(item) {
+            return item.Price * item.quantity;
+        }
 
 
     },
@@ -36,7 +66,7 @@ export default {
                 Product</v-btn></router-link>
         <v-btn text @click="logout">Logout</v-btn>
         <v-btn class="text-none" stacked size="large" @click.stop="cartDrawer = !cartDrawer">
-            <v-badge color="success" content="0">
+            <v-badge color="success" :content="cart.length">
                 <v-icon size="large">mdi-cart</v-icon>
 
             </v-badge>
@@ -85,6 +115,41 @@ export default {
         </v-list>
     </v-navigation-drawer>
     <v-navigation-drawer v-model="cartDrawer" temporary location="right" width="500">
+        <v-list>
+            <v-subheader>Cart</v-subheader>
+            <v-divider></v-divider>
+            <v-list-item v-for="(item, index) in cart" :key="index">
+                <v-list-item-avatar>
+                    <!-- Assuming you have an image URL for each product, you can display the image here -->
+                    <!-- <v-img :src="item.Image" height="50" contain></v-img> -->
+                </v-list-item-avatar>
+                <v-list-item-content>
+                    <v-list-item-title>{{ item.ProductName }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ item.Price }}</v-list-item-subtitle>
+                </v-list-item-content>
+                <v-list-item-action>
+                    <!-- Decrement quantity button -->
+                    <v-btn icon @click="decrementQuantity(index)">
+                        <v-icon>mdi-minus</v-icon>
+                    </v-btn>
+                    <!-- Display quantity -->
+                    <span>{{ item.quantity }}</span>
+                    <!-- Increment quantity button -->
+                    <v-btn icon @click="incrementQuantity(index)">
+                        <v-icon>mdi-plus</v-icon>
+                    </v-btn>
+                    <!-- Remove from cart button -->
+                    <v-btn icon @click="removeFromCart(index)">
+                        <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                    <span>Subtotal: {{ calculateSubtotal(item) }}</span>
+                </v-list-item-action>
+            </v-list-item>
+            <!-- If the cart is empty -->
+            <v-list-item v-if="cart.length === 0">
+                <v-list-item-content>No items in the cart</v-list-item-content>
+            </v-list-item>
+        </v-list>
     </v-navigation-drawer>
 </template>
 <style>
