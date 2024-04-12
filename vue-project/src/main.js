@@ -17,6 +17,7 @@ const vuetify = createVuetify({
   directives,
 });
 app.use(router);
+
 app.use(vuetify);
 app.use(ToastPlugin, {
   position: "top-right",

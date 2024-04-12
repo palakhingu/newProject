@@ -49,10 +49,11 @@ export default {
             }
             this.$apiService.post("Login", data)
                 .then((response) => {
+                    console.log(response);
                     const token = response.data.Token;
-                    const UserName = response.data.Username;
+                    const userId = response.data.Userid;
                     localStorage.setItem("token", token);
-                    localStorage.setItem("UserName", UserName);
+                    localStorage.setItem("Userid", userId);
                     this.$router.push("/products");
                 })
                 .catch((error) => {

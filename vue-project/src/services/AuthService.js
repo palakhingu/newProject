@@ -1,10 +1,11 @@
 class AuthService {
   logout() {
-    localStorage.clear();
+    localStorage.removeItem("token");
+    localStorage.removeItem("UserId");
   }
 
   getUserInfo() {
-    return localStorage.getItem("token"); 
+    return localStorage.getItem("token");
   }
 }
 
