@@ -1,32 +1,85 @@
 <template>
     <v-container style="margin-top:100px">
-        <v-row justify="center">
-            <v-col v-for="(product, index) in cart" :key="product.ProductId" cols="7" sm="7">
-                <v-card class="mb-5  elevation-5 pl-5 pr-5 pb-5 pt-5">
-                    <v-row align="center">
-                        <v-col cols="4">
-                            <v-img :src="getImageUrl(product.Image)" contain width="200" height="200"></v-img>
-                        </v-col>
-                        <v-col cols="6" class="mb-5">
-                            <p class="text-h5 mb-3 font-weight-bold ml-6">{{ product.ProductName }}</p>
-                            <p class="text-body-1 mb-3 ml-10">Price: ₹{{ product.Price }}</p>
-                            <v-btn icon @click="incrementQuantity(index)" color="primary" class="mr-2">
-                                <v-icon>
-                                    mdi-plus
-                                </v-icon></v-btn>
-                            <span class="text-body-1">{{ product.quantity }}</span>
-                            <v-btn icon @click="decrementQuantity(index)" color="primary" class="ml-2 ">
-                                <v-icon>mdi-minus</v-icon>
-                            </v-btn>
-                            <br>
-                            <v-btn @click="removeFromCart(index)" color="error" class="mt-2">Remove</v-btn>
-                        </v-col>
-                        <v-col cols="2" class="text-right">
-                            <p class="text-body-1">Subtotal: ₹{{ calculateSubtotal(product) }}</p>
-                        </v-col>
-                    </v-row>
-                </v-card>
-            </v-col>
+        <v-row align="center">
+           <v-col lg="8">
+                <v-table>
+                    <thead>
+                        <tr >
+                            <th  style="font-weight: 700;font-size: 20px;padding-left: 50px;">Product</th>
+                            <th   style="font-weight: 700;font-size: 20px;">Price</th>
+                            <th   style="font-weight: 700;font-size: 20px;padding-left:45px">Quantity</th>
+                            <th   style="font-weight: 700;font-size: 20px;">Subtotal</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(product,index) in cart">
+                            <td class="pb-4 pt-4 pr-4 "  >
+                                <v-img  class="mb-4" :src="getImageUrl(product.Image)" contain width="200" height="200"></v-img>
+                                <div class="ml-6 " style="font-size: 18px;">{{ product.ProductName }}</div>
+                            </td>
+                            <td class=" text-h6">
+                                ₹ {{ product.Price }}
+                            </td>
+                            <td >
+                               <div class="d-flex">
+                                <v-btn icon color="primary" @click="decrementQuantity(index)">
+                                    <v-icon>
+                                        mdi-minus
+                                    </v-icon>
+                                </v-btn>
+                               <div class="text-h6 mr-3 ml-3 mt-2 font-weight-bold"> {{ product.quantity }}</div>
+                               <v-btn icon color="primary" @click="incrementQuantity(index)">
+                                    <v-icon>
+                                        mdi-plus
+                                    </v-icon>
+                                </v-btn>
+                               </div>
+                            </td>
+                            <td class=" text-h5 font-weight-bold">
+                                <v-chip size="large" class="ml-4">₹ {{ calculateSubtotal(product) }}</v-chip>
+                            </td>
+                            <td>
+                                <v-btn icon color="error"  @click="removeFromCart(index)" >
+                                    <v-icon>
+                                        mdi-delete
+                                    </v-icon>
+                                </v-btn>
+                            </td>
+                        </tr>
+                    </tbody>
+                </v-table>
+           </v-col>
+            <v-col cols="4" justify="center" class="pl-1">
+        <v-card elevation="5" >
+          <v-card-title class="text-center text-h5 mt-4 mb-4 ">Cart Summary</v-card-title>
+          <hr>
+          <v-card-text>
+            <div class="mb-6 d-flex justify-space-between pl-2 pr-4">
+                <div>
+                    <v-icon size="large">mdi-cart</v-icon>
+              <span class="ml-4  text-h6 ">Total Items : </span>
+                </div>
+                <div class="text-h5 font-weight-bold  mt-1 text-blue-darken-4">
+                    {{ totalItems }}
+                </div>
+            </div>
+            <div class="mb-6 d-flex justify-space-between pl-2 pr-4">
+                <div>
+                    <v-icon size="large">mdi-currency-inr</v-icon>
+              <span class="ml-4  text-h6 ">Sub Total : </span>
+                </div>
+                <div class="text-h5 font-weight-bold  mt-1 text-blue-darken-4">
+                    {{ totalPrice }}
+                </div>
+            </div>  
+          </v-card-text>
+          <hr>
+          <v-card-actions class="justify-center ">
+            <v-btn color="primary" outlined @click="checkout">Checkout</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
         </v-row>
     </v-container>
 </template>
@@ -41,6 +94,14 @@ export default {
             baseUrl: 'http://192.168.1.25:8010/',
         };
     },
+    computed: {
+    totalItems() {
+      return this.cart.reduce((total, item) => total + item.quantity, 0);
+    },
+    totalPrice() {
+      return this.cart.reduce((total, item) => total + (item.Price * item.quantity), 0);
+    }
+  },
     methods: {
         getUserId() {
             return localStorage.getItem('Userid');
@@ -68,22 +129,6 @@ export default {
 </script>
 
 <style scoped>
-.text-h1 {
-    font-size: 2.5rem;
-    margin-bottom: 2rem;
-}
 
-.text-h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-.text-body-1 {
-    font-size: 1rem;
-}
-
-.text-right {
-    text-align: right;
-}
 </style>
 

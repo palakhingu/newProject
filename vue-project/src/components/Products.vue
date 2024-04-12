@@ -92,4 +92,4 @@ export default {
 .cards:hover {
     transform: translateY(-5px);
 }
-</style>../store/cart
+</style>
