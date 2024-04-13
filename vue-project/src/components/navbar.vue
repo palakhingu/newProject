@@ -11,19 +11,20 @@ export default {
         };
     },
     mounted() {
-        if (localStorage.getItem("token")) {
-            this.access = true;
-        }
-        else {
-            this.access = false;
-        }
+        this.checkAccess();
     },
     methods: {
         logout() {
             AuthService.logout();
             this.$router.push("/login");
         },
-
+        checkAccess() {
+            if (localStorage.getItem("token")) {
+                this.access = true;
+            } else {
+                this.access = false;
+            }
+        },
     },
 
 

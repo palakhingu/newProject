@@ -12,7 +12,7 @@
                             label="Search" placholder="Search"></v-text-field>
                     </v-col>
                 </v-row>
-                <v-table fixed-header v-if="!noData" class="rounded elevation-5 text-subtitle-1" height="500"
+                <v-table fixed-header v-if="!noData" class="rounded elevation-5 text-subtitle-1" height="600"
                     density="default">
                     <thead>
                         <tr>
@@ -37,10 +37,10 @@
                     <br>
                     <tbody>
                         <tr v-for="(product) in serverItems">
-                            <td class="text-center ">{{ product.ProductName }}</td>
-                            <td class="text-center ">{{ product.ProductDescription }}</td>
-                            <td class="text-center">{{ product.Price }}</td>
-                            <td class="text-center">{{ product.Quantity }}</td>
+                            <td class="text-center pb-6 pt-6 ">{{ product.ProductName }}</td>
+                            <td class="text-center pb-6 pt-6 ">{{ product.ProductDescription }}</td>
+                            <td class="text-center pb-6 pt-6">{{ product.Price }}</td>
+                            <td class="text-center pb-6 pt-6">{{ product.Quantity }}</td>
                             <td>
                                 <div class="d-flex">
                                     <v-btn color="success" class="mr-3"
@@ -137,4 +137,3 @@ v-table {
     padding: 10px;
 }
 </style>
-

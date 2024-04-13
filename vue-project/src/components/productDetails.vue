@@ -1,6 +1,6 @@
 <template>
     <v-container class="container">
-        <v-row v-for="data in result" align="center" class="elevation-5 row">
+        <v-row v-for="data in result" align="center" class="elevation-10 row">
             <v-col>
                 <v-img :src="getImageUrl(data.Image)" width="500" height="500" contain></v-img>
             </v-col>
@@ -47,7 +47,6 @@ export default {
                 })
                     .then((res) => {
                         this.result = res.data
-                        console.log(this.result);
                     })
                     .catch((err) => {
                         console.log(err);

@@ -133,10 +133,13 @@ export default {
             BuckleNumber: "",
             Image: [],
             allCategories: [],
-            selectedCategory: []
+            selectedCategory: [],
+            baseUrl: 'http://192.168.1.25:8010/',
+
         }
     },
     mounted() {
+
         this.getCategories();
         if (this.$route.params.id) {
             this.updateForm();
@@ -257,7 +260,12 @@ export default {
                         this.selectedCategory = product.CategoryId;
                         this.ManifacturedDate = new Date(product.ManifacturedAt);
                         this.ExpiryDate = new Date(product.ExpireAt);
-                        this.Image = [{ name: product.Image }];
+                        const files = {
+                            name: `${this.baseUrl + product.Image.replace(/\\/g, '/')}`,
+                            type: "image/jpg",
+                            lastModified: new Date(),
+                        }
+                        this.Image.push(files)
                     })
                     .catch((err) => {
                         console.log(err);

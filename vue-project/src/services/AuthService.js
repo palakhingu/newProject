@@ -1,7 +1,7 @@
 class AuthService {
   logout() {
     localStorage.removeItem("token");
-    localStorage.removeItem("UserId");
+    localStorage.removeItem("Userid");
   }
 
   getUserInfo() {

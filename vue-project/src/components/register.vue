@@ -89,7 +89,6 @@ export default {
         getRoles() {
             this.$apiService.get("GetAllRoles")
                 .then((res) => {
-                    console.log(res);
                     this.allRoles = res.data.map((role) => ({ RoleId: role.RoleId, RoleName: role.RoleName }));
                 })
                 .catch((error) => {

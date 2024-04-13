@@ -5,6 +5,9 @@ export default {
     navbar,
   },
 };
+
+
+
 </script>
 
 <template>

@@ -1,4 +1,3 @@
-
 <template>
     <v-container class="container">
         <v-row justify="center">
@@ -58,7 +57,6 @@ export default {
             })
                 .then((res) => {
                     this.ServiceObject = res.data.ServiceObject;
-                    console.log(res);
                 })
                 .catch((error) => {
                     console.error("Error fetching products:", error);
@@ -71,7 +69,7 @@ export default {
             this.$router.push(`productDetails/${id}`)
         },
         handleAddToCart(product) {
-            addToCart(product, localStorage.getItem("Userid"));
+            addToCart(product);
             this.$toast.success("Product added to cart successfully");
         }
 
