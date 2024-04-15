@@ -139,3 +139,11 @@ export default {
     margin-top: 80px;
 }
 </style>
+<!-- Today's Update:
+Learning Project: ( @RAVI GAUD sir )
+=> Vue js:
+    - modification in cart functionality
+    - started learning pinia for state management
+    - implementing cart functionality using pinia
+Tomorrow's task:
+=> Continue with learning pinia and implementing cart functionality -->

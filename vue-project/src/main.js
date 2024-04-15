@@ -6,10 +6,10 @@ import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import "@mdi/font/css/materialdesignicons.css";
-import AuthService from "@/services/AuthService";
 import ToastPlugin from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-bootstrap.css";
 import ApiService from "./services/ApiServices";
+import { createPinia } from "pinia";
 const app = createApp(App);
 
 const vuetify = createVuetify({
@@ -17,7 +17,7 @@ const vuetify = createVuetify({
   directives,
 });
 app.use(router);
-
+app.use(createPinia());
 app.use(vuetify);
 app.use(ToastPlugin, {
   position: "top-right",
@@ -26,7 +26,7 @@ app.config.globalProperties.$apiService = ApiService;
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!AuthService.getUserInfo()) {
+    if (!localStorage.getItem("token")) {
       next({
         path: "/login",
       });
@@ -34,7 +34,7 @@ router.beforeEach((to, from, next) => {
       next();
     }
   } else if (to.fullPath == "/login") {
-    if (AuthService.getUserInfo()) {
+    if (localStorage.getItem("token")) {
       next({
         path: "/products",
       });

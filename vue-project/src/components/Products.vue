@@ -10,7 +10,7 @@
                         </div>
                         <div>
                             <div class="mt-4 mb-4 font-weight-bold text-center text-capitalize "
-                                style="font-size: 19px;">
+                                style="font-size: 17px;">
                                 {{ product.ProductName }}
                             </div>
                             <div class="d-flex ml-4 mr-4 mb-5 justify-space-between">
@@ -35,14 +35,16 @@
 </template>
 
 <script>
-import { addToCart } from '../store/cart'
+// import { addToCart } from '../store/cart'  
+import { useCartStore } from '../store/cart'
+
 export default {
 
     data() {
         return {
             ServiceObject: [],
             baseUrl: 'http://192.168.1.25:8010/',
-            cart: [],
+            // cart: [],
         }
     },
     mounted() {
@@ -69,7 +71,7 @@ export default {
             this.$router.push(`productDetails/${id}`)
         },
         handleAddToCart(product) {
-            addToCart(product);
+            useCartStore().addToCart(product);  
             this.$toast.success("Product added to cart successfully");
         }
 

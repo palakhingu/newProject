@@ -1,33 +1,32 @@
 <script>
-import AuthService from "../services/AuthService";
-import { cart } from '../store/cart'
+// import { cart } from '../store/cart'
+import { useCartStore } from '../store/cart'
+import { useNavbarStore } from "@/store/navbar";
+
 export default {
     data() {
 
         return {
             drawer: false,
-            access: false,
-            cart: cart,
+            
+
         };
     },
-    mounted() {
-        this.checkAccess();
+
+    computed: {
+        access() {
+            return useNavbarStore().isAuthenticated;
+        },
+        cart() {
+            return useCartStore().cart;
+        }
     },
     methods: {
         logout() {
-            AuthService.logout();
+            useNavbarStore().logout();
             this.$router.push("/login");
-        },
-        checkAccess() {
-            if (localStorage.getItem("token")) {
-                this.access = true;
-            } else {
-                this.access = false;
-            }
-        },
+        }
     },
-
-
 
 };
 </script>

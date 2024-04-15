@@ -97,41 +97,47 @@
 </template>
 
 <script>
-import { cart, removeFromCart, incrementQuantity, decrementQuantity } from '../store/cart';
-
+import { useCartStore } from '../store/cart'
 export default {
     data() {
         return {
-            cart: cart,
+            cartStore: useCartStore(),
             baseUrl: 'http://192.168.1.25:8010/',
+            totalItems: useCartStore().totalItems,
         };
     },
+    mounted() {
+        console.log(this.cart);
+    },
     computed: {
+        cart() {
+            return this.cartStore.cart;
+        },
         totalItems() {
-            return this.cart.reduce((total, item) => total + item.quantity, 0);
+            return this.cartStore.totalItems;
         },
         totalPrice() {
-            return this.cart.reduce((total, item) => total + (item.Price * item.quantity), 0);
-        }
+            return this.cartStore.totalPrice;
+        },
+
     },
+
+
     methods: {
         getUserId() {
             return localStorage.getItem('Userid');
         },
         removeFromCart(index) {
-            removeFromCart(index);
-            this.cart = [...cart];
+            this.cartStore.removeFromCart(index);
         },
         incrementQuantity(index) {
-            incrementQuantity(index);
-            this.cart = [...cart];
+            this.cartStore.incrementQuantity(index);
         },
         decrementQuantity(index) {
-            decrementQuantity(index);
-            this.cart = [...cart];
+            this.cartStore.decrementQuantity(index);
         },
-        calculateSubtotal(item) {
-            return item.Price * item.quantity;
+        calculateSubtotal(product) {
+            return this.cartStore.calculateSubtotal(product);
         },
         getImageUrl(imagePath) {
             return this.baseUrl + imagePath.replace(/\\/g, '/');

@@ -30,6 +30,8 @@
 </template>
 
 <script>
+import { useNavbarStore } from "@/store/navbar";
+
 export default {
     data() {
         return {
@@ -55,6 +57,7 @@ export default {
                     localStorage.setItem("token", token);
                     localStorage.setItem("Userid", userId);
                     this.$router.push("/products");
+                    useNavbarStore().isAuthenticated =true;
                 })
                 .catch((error) => {
                     console.log(error);

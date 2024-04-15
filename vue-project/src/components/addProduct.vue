@@ -19,7 +19,7 @@
                     </v-row>
                     <v-row>
                         <v-col cols="12">
-                            <v-textarea label="Enter Product Description" variant="outlined" auto-grow rows="3"
+                            <v-textarea label="Enter Product Description" variant="outlined" rows="3" no-resize
                                 :rules="[RequriedRules.required]" v-model="Description" required
                                 placeholder="Enter Product Description"></v-textarea>
                         </v-col>
@@ -40,14 +40,17 @@
                     <v-row>
                         <v-col lg="6">
                             <v-text-field label="Enter Buckle Number" placeholder="Enter Buckle Number" type="number"
-                                variant="outlined" :rules="[RequriedRules.required]" required v-model="BuckleNumber">
+                                variant="outlined" :rules="[RequriedRules.required]" required v-model="BuckleNumber" hint="6 digits">
                             </v-text-field>
                         </v-col>
                         <v-col lg="6">
-                            <v-file-input variant="outlined" label='Add Image' placeholder="Add Image" chips
-                                append-inner-icon="mdi-paperclip" prepend-icon="" v-model:title="Image"
-                                @change="handleFileUpload" clearable></v-file-input>
-
+                            <v-file-input variant="outlined" label="Add Image" placeholder="Add Image" 
+                                append-inner-icon="mdi-paperclip" prepend-icon="" @change="handleFileUpload"
+                                v-model="Image">
+                                <template v-slot:prepend-inner>
+                                    <span v-if="Image" class="truncate" >{{ Image.name }}   </span>
+                                </template>
+                            </v-file-input>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -164,14 +167,6 @@ export default {
         }
     },
     methods: {
-        DateFormatted(dateInput) {
-            if (!dateInput) return '';
-            const date = new Date(dateInput);
-            const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const day = date.getDate().toString().padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        },
         handleFileUpload(event) {
             this.Image = event.target.files[0];
         },
@@ -252,6 +247,10 @@ export default {
                     .then((res) => {
                         console.log(res);
                         const product = res.data[0];
+                        const blob = new Blob([], { type: 'application/octet-stream' });
+                        const file = new File([blob], product.Image.split("\\")[2])
+                        
+                        this.Image = file;
                         this.ProductName = product.ProductName;
                         this.Description = product.ProductDescription;
                         this.Price = product.Price;
@@ -260,12 +259,7 @@ export default {
                         this.selectedCategory = product.CategoryId;
                         this.ManifacturedDate = new Date(product.ManifacturedAt);
                         this.ExpiryDate = new Date(product.ExpireAt);
-                        const files = {
-                            name: `${this.baseUrl + product.Image.replace(/\\/g, '/')}`,
-                            type: "image/jpg",
-                            lastModified: new Date(),
-                        }
-                        this.Image.push(files)
+
                     })
                     .catch((err) => {
                         console.log(err);
@@ -309,5 +303,12 @@ export default {
 <style scoped>
 .container {
     margin-top: 80px;
+}
+
+.truncate {
+    max-width: 190px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 </style>

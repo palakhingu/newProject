@@ -19,7 +19,6 @@
 
 
 <script>
-    // import axios from 'axios';
 
 export default {
     data() {
@@ -32,7 +31,6 @@ export default {
     },
     methods: {
         resetPassword() {
-            // axios.get(`http://192.168.1.25:8010/Api/PDMS/ForgotPassword/${this.email}`)
             this.$apiService.get(`ForgotPassword/${this.email}`)
                 .then((res) => {
                     this.$toast.success(res.data.Message)

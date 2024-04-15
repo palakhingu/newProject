@@ -5,11 +5,7 @@ export default {
     navbar,
   },
 };
-
-
-
 </script>
-
 <template>
   <v-app>
     <navbar />
