@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { useNavbarStore } from "@/store/navbar";
+import { useAuthStore } from "@/store/auth";
 
 export default {
     data() {
@@ -56,8 +56,8 @@ export default {
                     const userId = response.data.Userid;
                     localStorage.setItem("token", token);
                     localStorage.setItem("Userid", userId);
+                    useAuthStore().isAuthenticated = true;
                     this.$router.push("/products");
-                    useNavbarStore().isAuthenticated =true;
                 })
                 .catch((error) => {
                     console.log(error);
@@ -74,3 +74,4 @@ export default {
     margin-top: 100px;
 }
 </style>
+@/store/auth

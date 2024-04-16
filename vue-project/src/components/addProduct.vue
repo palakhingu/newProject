@@ -40,15 +40,16 @@
                     <v-row>
                         <v-col lg="6">
                             <v-text-field label="Enter Buckle Number" placeholder="Enter Buckle Number" type="number"
-                                variant="outlined" :rules="[RequriedRules.required]" required v-model="BuckleNumber" hint="6 digits">
+                                variant="outlined" :rules="[RequriedRules.required]" required v-model="BuckleNumber"
+                                hint="6 digits">
                             </v-text-field>
                         </v-col>
                         <v-col lg="6">
-                            <v-file-input variant="outlined" label="Add Image" placeholder="Add Image" 
+                            <v-file-input variant="outlined" label="Add Image" placeholder="Add Image"
                                 append-inner-icon="mdi-paperclip" prepend-icon="" @change="handleFileUpload"
                                 v-model="Image">
                                 <template v-slot:prepend-inner>
-                                    <span v-if="Image" class="truncate" >{{ Image.name }}   </span>
+                                    <span v-if="Image" class="truncate">{{ Image.name }} </span>
                                 </template>
                             </v-file-input>
                         </v-col>
@@ -116,8 +117,6 @@
 
 
 <script>
-
-
 export default {
     data() {
         return {
@@ -142,10 +141,9 @@ export default {
         }
     },
     mounted() {
-
         this.getCategories();
         if (this.$route.params.id) {
-            this.updateForm();
+            this.updateForm(this.$route.params.id);
         }
     },
     computed: {
@@ -191,10 +189,10 @@ export default {
         },
         addProduct() {
             if (this.$route.params.id) {
-                this.update(this.$route.params.id)
+                this.update(this.$route.params.id);
+                
             }
             else {
-                console.log(this.Image);
                 const formData = {
                     ProductName: this.ProductName,
                     ProductDescription: this.Description,
@@ -213,7 +211,6 @@ export default {
                         'Authorization': localStorage.getItem("token")
                     }
                 }).then((res) => {
-                    console.log(res);
                     if (res.statusText == "OK" && res.status == 200) {
                         this.$router.push("/displayProduct")
                     }
@@ -236,35 +233,33 @@ export default {
                 });
             }
         },
-        updateForm() {
-            const ProductId = this.$route.params.id;
-            if (ProductId) {
-                this.$apiService.get(`GetProductById?ProductId=${ProductId}`, {
-                    headers: {
-                        'authorization': localStorage.getItem("token")
-                    }
-                })
-                    .then((res) => {
-                        console.log(res);
-                        const product = res.data[0];
-                        const blob = new Blob([], { type: 'application/octet-stream' });
-                        const file = new File([blob], product.Image.split("\\")[2])
-                        
-                        this.Image = file;
-                        this.ProductName = product.ProductName;
-                        this.Description = product.ProductDescription;
-                        this.Price = product.Price;
-                        this.Quantity = product.Quantity;
-                        this.BuckleNumber = product.BuckleNumber;
-                        this.selectedCategory = product.CategoryId;
-                        this.ManifacturedDate = new Date(product.ManifacturedAt);
-                        this.ExpiryDate = new Date(product.ExpireAt);
+        updateForm(id) {
+            this.$apiService.get(`GetProductById?ProductId=${id}`, {
+                headers: {
+                    'authorization': localStorage.getItem("token")
+                }
+            })
+                .then((res) => {
+                    console.log(res);
+                    const product = res.data[0];
+                    const blob = new Blob([], { type: 'application/octet-stream' });
+                    const file = new File([blob], product.Image.split("\\")[2])
 
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    })
-            }
+                    this.Image = file;
+                    this.ProductName = product.ProductName;
+                    this.Description = product.ProductDescription;
+                    this.Price = product.Price;
+                    this.Quantity = product.Quantity;
+                    this.BuckleNumber = product.BuckleNumber;
+                    this.selectedCategory = product.CategoryId;
+                    this.ManifacturedDate = new Date(product.ManifacturedAt);
+                    this.ExpiryDate = new Date(product.ExpireAt);
+
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+
         },
         update(id) {
             const formData = {

@@ -27,6 +27,7 @@
                     </v-card-item>
                     <v-card-actions class="justify-end">
                         <v-btn color="primary" @click="handleAddToCart(product)">Add to Cart</v-btn>
+
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -35,7 +36,6 @@
 </template>
 
 <script>
-// import { addToCart } from '../store/cart'  
 import { useCartStore } from '../store/cart'
 
 export default {
@@ -44,7 +44,7 @@ export default {
         return {
             ServiceObject: [],
             baseUrl: 'http://192.168.1.25:8010/',
-            // cart: [],
+
         }
     },
     mounted() {
@@ -71,8 +71,13 @@ export default {
             this.$router.push(`productDetails/${id}`)
         },
         handleAddToCart(product) {
-            useCartStore().addToCart(product);  
-            this.$toast.success("Product added to cart successfully");
+            if (useCartStore().stockOut) {
+                this.$toast.error("Product is out of stock")
+            }
+            else {
+
+                useCartStore().addToCart(product);
+            }
         }
 
     }

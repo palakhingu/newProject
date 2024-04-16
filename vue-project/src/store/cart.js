@@ -3,6 +3,7 @@ export const useCartStore = defineStore("cart", {
   state: () => ({
     userId: localStorage.getItem("Userid") || "",
     cart: JSON.parse(localStorage.getItem(`cart_${localStorage.getItem("Userid")}`)) || [],
+    stockOut: false,
   }),
   getters: {
     totalItems() {
@@ -14,9 +15,13 @@ export const useCartStore = defineStore("cart", {
   },
   actions: {
     addToCart(product) {
-      const alreadyExistProductIndex = this.cart.findIndex((item) => item.ProductId === product.ProductId);
-      if (alreadyExistProductIndex !== -1) {
-        this.cart[alreadyExistProductIndex].quantity++;
+      const existItem = this.cart.findIndex((item) => item.ProductId === product.ProductId);
+      if (existItem !== -1) {
+        if (this.cart[existItem].quantity >= product.Quantity) {
+          this.stockOut = true;
+        } else {
+          this.cart[existItem].quantity++;
+        }
       } else {
         this.cart.push({ ...product, quantity: 1 });
       }
@@ -27,7 +32,11 @@ export const useCartStore = defineStore("cart", {
       this.saveCartToLocalStorage();
     },
     incrementQuantity(index) {
-      this.cart[index].quantity++;
+      if (this.cart[index].quantity >= this.cart[index].Quantity) {
+        this.stockOut = true;
+      } else {
+        this.cart[index].quantity++;
+      }
       this.saveCartToLocalStorage();
     },
     decrementQuantity(index) {
@@ -40,6 +49,10 @@ export const useCartStore = defineStore("cart", {
     },
     calculateSubtotal(item) {
       return item.Price * item.quantity;
+    },
+    clearCart() {
+      this.cart = [];
+      this.saveCartToLocalStorage();
     },
     saveCartToLocalStorage() {
       if (this.cart.length === 0) {

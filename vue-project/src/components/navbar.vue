@@ -1,33 +1,33 @@
 <script>
 // import { cart } from '../store/cart'
 import { useCartStore } from '../store/cart'
-import { useNavbarStore } from "@/store/navbar";
-
+import { useAuthStore } from "@/store/auth";
 export default {
     data() {
 
         return {
             drawer: false,
-            
-
         };
     },
 
     computed: {
         access() {
-            return useNavbarStore().isAuthenticated;
+            return useAuthStore().isAuthenticated;
         },
         cart() {
             return useCartStore().cart;
-        }
+        },
     },
     methods: {
         logout() {
-            useNavbarStore().logout();
+            useAuthStore().logout();
             this.$router.push("/login");
-        }
-    },
+        },
 
+    },
+    mounted() {
+
+    }
 };
 </script>
 <template>
@@ -35,10 +35,10 @@ export default {
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <router-link to="/" class="router-link"><v-toolbar-title>My App</v-toolbar-title></router-link>
         <v-spacer></v-spacer>
-        <router-link to="/products" class="router-link"><v-btn text>Products</v-btn></router-link>
-        <router-link to="/addProduct" class="router-link" v-if="access"><v-btn text>Add Product</v-btn></router-link>
-        <router-link to="/displayProduct" class="router-link" v-if="access"><v-btn text>Display
+        <router-link to="/products" class="router-link" v-if="access"><v-btn text>Products</v-btn></router-link>
+        <router-link to="/addProduct" class="router-link" v-if="access"><v-btn text>Add
                 Product</v-btn></router-link>
+        <router-link to="/displayProduct" class="router-link" v-if="access"><v-btn text>Product List</v-btn></router-link>
         <v-btn text @click="logout">Logout</v-btn>
         <v-btn class="text-none" stacked size="large" @click="this.$router.push('/cart')" v-if="access">
             <v-badge color="success" :content="cart.length">
@@ -68,16 +68,7 @@ export default {
                     </div>
                 </v-list-item>
             </router-link>
-            <router-link to="/home" class="router-link">
-                <v-list-item link>
-                    <div class="d-flex">
-                        <v-list-item-icon>
-                            <v-icon>mdi-home</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title style="margin-left: 10px !important;">Home</v-list-item-title>
-                    </div>
-                </v-list-item>
-            </router-link>
+            <v-divider></v-divider>
             <v-list-item link>
                 <div class="d-flex">
                     <v-list-item-icon>

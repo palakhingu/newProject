@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-export const useNavbarStore = defineStore("navbar", {
+export const useAuthStore = defineStore("navbar", {
   state: () => ({
     isAuthenticated: !!localStorage.getItem("token"),
   }),
@@ -11,4 +11,3 @@ export const useNavbarStore = defineStore("navbar", {
     },
   },
 });
-

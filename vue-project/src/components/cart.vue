@@ -11,8 +11,8 @@
         </v-row>
         <div v-else>
             <v-row align="center" v justify="center">
-                <v-col lg="11" xl="9" md="10" sm="11">
-                    <v-table>
+                <v-col lg="11" xl="8" md="10" sm="11">
+                    <v-table height="550">
                         <thead>
                             <tr>
                                 <th style="font-weight: 700;font-size: 20px;padding-left: 50px;">Product</th>
@@ -24,11 +24,11 @@
                         </thead>
                         <tbody>
                             <tr v-for="(product, index) in cart">
-                                <td class="pb-4 pt-4 pr-4 ">
-                                    <v-img class="mb-4" :src="getImageUrl(product.Image)" contain width="200"
-                                        height="200"></v-img>
-                                    <div class="ml-9 text-h5 font-weight-bold " style="font-size: 18px;">{{
-            product.ProductName }}</div>
+                                <td class="pb-2 pt-5  ">
+                                    <v-img class="mb-4" :src="getImageUrl(product.Image)" contain width="150"
+                                        height="150"></v-img>
+                                    <div class="ml-8 text-h6 font-weight-bold " style="font-size: 18px;">
+                                        {{ product.ProductName }}</div>
                                 </td>
                                 <td class=" text-h6">
                                     ₹ {{ product.Price }}
@@ -64,7 +64,6 @@
                     </v-table>
                 </v-col>
             </v-row>
-
             <v-row justify="center">
                 <v-col lg="3" md="4" sm="5" xl="2">
                     <v-card elevation="5">
@@ -86,6 +85,10 @@
                                 <div class="text-h5 font-weight-bold  mt-1 text-blue-darken-4">
                                     {{ totalPrice }}
                                 </div>
+
+                            </div>
+                            <div class="d-flex justify-center mt-4">
+                                <v-btn color="red" @click="addOrder()">Place Order</v-btn>
                             </div>
                         </v-card-text>
                     </v-card>
@@ -103,7 +106,6 @@ export default {
         return {
             cartStore: useCartStore(),
             baseUrl: 'http://192.168.1.25:8010/',
-            totalItems: useCartStore().totalItems,
         };
     },
     mounted() {
@@ -121,17 +123,17 @@ export default {
         },
 
     },
-
-
     methods: {
-        getUserId() {
-            return localStorage.getItem('Userid');
-        },
         removeFromCart(index) {
             this.cartStore.removeFromCart(index);
         },
         incrementQuantity(index) {
-            this.cartStore.incrementQuantity(index);
+            if (useCartStore().stockOut) {
+                this.$toast.error("Stock out")
+            }
+            else {
+                this.cartStore.incrementQuantity(index);
+            }
         },
         decrementQuantity(index) {
             this.cartStore.decrementQuantity(index);
@@ -142,8 +144,40 @@ export default {
         getImageUrl(imagePath) {
             return this.baseUrl + imagePath.replace(/\\/g, '/');
         },
+        addOrder() {
+            const token = localStorage.getItem('token')
+            const userId = localStorage.getItem('Userid')
+            const OrderData = {
+                "CustomerId": userId,
+                "ProductDataList":
+                    this.cart.map((product) => {
+                        return {
+                            "ProductId": product.ProductId,
+                            "Quantity": product.quantity,
+                            "CreatedBy": product.CreatedBy
+                        }
+                    })
+            }
+            console.log(OrderData);
+            this.$apiService.post('AddOrder', OrderData, {
+                headers: {
+                    'authorization': token
+                }
+            })
+                .then((res) => {
+                    if (res.status == 200) {
+                        this.cartStore.clearCart();
+                        this.$toast.success("Order Placed successfully")
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        }
     },
 };
 </script>
 
 <style scoped></style>
+
+
