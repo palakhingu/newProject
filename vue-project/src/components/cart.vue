@@ -18,7 +18,7 @@
                                 <th style="font-weight: 700;font-size: 20px;padding-left: 50px;">Product</th>
                                 <th style="font-weight: 700;font-size: 20px;">Price</th>
                                 <th style="font-weight: 700;font-size: 20px;padding-left:45px">Quantity</th>
-                                <th style="font-weight: 700;font-size: 20px;">Subtotal</th>
+                                <th style="font-weight: 700;font-size: 20px;">Total</th>
 
                             </tr>
                         </thead>
@@ -88,7 +88,7 @@
 
                             </div>
                             <div class="d-flex justify-center mt-4">
-                                <v-btn color="red" @click="addOrder()">Place Order</v-btn>
+                                <v-btn color="success" block @click="addOrder()">Place Order</v-btn>
                             </div>
                         </v-card-text>
                     </v-card>
@@ -108,9 +108,6 @@ export default {
             baseUrl: 'http://192.168.1.25:8010/',
         };
     },
-    mounted() {
-        console.log(this.cart);
-    },
     computed: {
         cart() {
             return this.cartStore.cart;
@@ -121,7 +118,6 @@ export default {
         totalPrice() {
             return this.cartStore.totalPrice;
         },
-
     },
     methods: {
         removeFromCart(index) {
@@ -151,6 +147,7 @@ export default {
                 "CustomerId": userId,
                 "ProductDataList":
                     this.cart.map((product) => {
+                        console.log('product: ', product);
                         return {
                             "ProductId": product.ProductId,
                             "Quantity": product.quantity,
@@ -158,7 +155,6 @@ export default {
                         }
                     })
             }
-            console.log(OrderData);
             this.$apiService.post('AddOrder', OrderData, {
                 headers: {
                     'authorization': token
@@ -179,5 +175,3 @@ export default {
 </script>
 
 <style scoped></style>
-
-

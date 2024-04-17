@@ -1,7 +1,7 @@
 <template>
     <v-container class="container">
         <v-row justify="center">
-            <v-col v-for="(product, index) in ServiceObject" :key="product.ProductId" cols="auto" class="cards">
+            <v-col v-for="(product, index) in ServiceObject" :key="product.ProductId" cols="auto" class="cards ma-10">
                 <v-card class="mx-auto elevation-5 " width="280" max-height="450">
                     <v-card-item>
                         <div class="d-flex justify-center">
@@ -21,7 +21,7 @@
                             </div>
                             <div class="d-flex justify-center">
                                 <v-btn color="primary" @click="redirect(product.ProductId)" size="small" rounded="xl"
-                                    class="font-weight-bold" elevation="1" variant="outlined">More Details</v-btn>
+                                    class="font-weight-bold"  variant="outlined">More Details</v-btn>
                             </div>
                         </div>
                     </v-card-item>
@@ -90,7 +90,7 @@ export default {
 }
 
 .cards {
-    margin: 30px;
+    /* margin: 30px; */
     transition: all 0.1s ease-out;
 }
 

@@ -3,7 +3,7 @@
         <v-row justify="center" class="mt-5">
             <v-col lg="6" md="8" sm="8" class="elevation-5 rounded p-7" xl="4" xs="5">
                 <v-form @submit.prevent="addProduct" style="padding: 10px !important">
-                    <p class="text-center text-h5 mb-5 text-primary">Add Product</p>
+                    <p class="text-center text-h5 mb-5 text-primary">{{ FormTitle }}</p>
                     <v-row class="mt-5">
                         <v-col lg="6">
                             <v-text-field label="Enter Product Name" placeholder="Enter Product Name" type="text"
@@ -11,8 +11,8 @@
                             </v-text-field>
                         </v-col>
                         <v-col lg="6">
-                            <v-select v-model="selectedCategory" :item-props="itemProp" :items="allCategories"
-                                label="Select Category" variant="outlined" chips required placeholder="Add Image"
+                            <v-select v-model="selectedCategory" :items="allCategories" label="Select Category"
+                                variant="outlined" chips required placeholder="Add Image"
                                 :rules="[RequriedRules.required]">
                             </v-select>
                         </v-col>
@@ -137,6 +137,7 @@ export default {
             allCategories: [],
             selectedCategory: [],
             baseUrl: 'http://192.168.1.25:8010/',
+            FormTitle: "Add Product"
 
         }
     },
@@ -175,22 +176,16 @@ export default {
                 }
             })
                 .then((res) => {
-                    this.allCategories = res.data.map((category) => ({ CategoryId: category.CategoryId, CategoryName: category.CategoryName }));
+                    this.allCategories = res.data.map((category) => ({ value: category.CategoryId, title: category.CategoryName }));
                 })
                 .catch((error) => {
                     console.error("Error fetching tags:", error);
                 });
         },
-        itemProp(item) {
-            return {
-                title: item.CategoryName,
-                value: item.CategoryId,
-            }
-        },
         addProduct() {
             if (this.$route.params.id) {
                 this.update(this.$route.params.id);
-                
+
             }
             else {
                 const formData = {
@@ -234,7 +229,8 @@ export default {
             }
         },
         updateForm(id) {
-            this.$apiService.get(`GetProductById?ProductId=${id}`, {
+            this.FormTitle = "Update Product"
+            this.$apiService.get(`GetProductById/${id}`, {
                 headers: {
                     'authorization': localStorage.getItem("token")
                 }
@@ -243,6 +239,7 @@ export default {
                     console.log(res);
                     const product = res.data[0];
                     const blob = new Blob([], { type: 'application/octet-stream' });
+                    console.log('blob: ', blob);
                     const file = new File([blob], product.Image.split("\\")[2])
 
                     this.Image = file;
@@ -262,6 +259,7 @@ export default {
 
         },
         update(id) {
+            console.log('this.Image: ', this.Image);
             const formData = {
                 ProductId: id,
                 ProductName: this.ProductName,

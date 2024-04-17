@@ -10,7 +10,7 @@ const ApiService = {
   put(endPoint, data) {
     return axios.put(`${this.baseURL}/${endPoint}`, data);
   },
-  delete(endPoint,auth) {
+  delete(endPoint, auth) {
     return axios.delete(`${this.baseURL}/${endPoint}`, auth);
   },
 };

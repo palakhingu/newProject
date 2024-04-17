@@ -1,10 +1,10 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
-import "vuetify/styles";
 import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
+import "vuetify/styles";
 import "@mdi/font/css/materialdesignicons.css";
 import ToastPlugin from "vue-toast-notification";
 import "vue-toast-notification/dist/theme-bootstrap.css";
@@ -46,3 +46,5 @@ router.beforeEach((to, from, next) => {
   }
 });
 app.mount("#app");
+
+

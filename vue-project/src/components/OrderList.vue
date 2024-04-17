@@ -1,7 +1,7 @@
 <template>
     <v-container class="container">
         <v-row justify="center" class="mt-5">
-            <v-col xl=10 lg="12" md=12 sm="12">
+            <v-col xl="10" lg="12" md=12 sm="12">
                 <v-row justify="end">
                     <v-col lg="2">
                         <v-text-field v-model="itemsPerPage" class="pa-2" label="Rows per page" max="100" min="1"
@@ -24,36 +24,35 @@
                     </thead>
                     <br>
                     <tbody>
-                        <tr v-for="(product) in serverItems">
-                            <td class="text-center pa-6 ">{{ product.ProductName }}</td>
-                            <td class="text-center pa-6 ">{{ product.ProductDescription }}</td>
-                            <td class="text-center pa-6">{{ product.Price }}</td>
-                            <td class="text-center pa-6">{{ product.Quantity }}</td>
+                        <tr v-for="(order) in serverItems">
+                            <td class="text-center pa-6">{{ order.orderId }}</td>
+                            <td class="text-center pa-6">{{ order.CustomerName }}</td>
+                            <td class="text-center pa-6">{{ order.productName }}</td>
+                            <td class="text-center pa-6">{{ order.price }}</td>
+                            <td class="text-center pa-6">{{ order.quantity }}</td>
+                            <td class="text-center pa-6">{{ order.category }}</td>
+                            <td class="text-center pa-6">{{ order.orderStatus }}</td>
                             <td>
                                 <div class="d-flex">
-                                    <v-btn color="success" class="mr-3" @click="updateProduct(product.ProductId)" icon>
+                                    <v-btn color="success" class="mr-3" icon>
                                         <v-icon>
                                             mdi-pencil
                                         </v-icon>
                                     </v-btn>
-                                    <v-btn color="error" @click="this.delete(product.ProductId)" icon>
-
+                                    <v-btn color="error" icon>
                                         <v-icon>
                                             mdi-delete
                                         </v-icon>
                                     </v-btn>
                                 </div>
-
                             </td>
                         </tr>
                     </tbody>
                 </v-table>
-
                 <div v-else class="text-center">
                     {{ noData }}
                 </div>
                 <br>
-
                 <div class="mt-3">
                     <v-row justify="center">
                         <v-col cols="12">
@@ -64,44 +63,27 @@
             </v-col>
         </v-row>
     </v-container>
-
 </template>
 <script>
 export default {
     data() {
         return {
             page: 1,
-            itemsPerPage: 5,
+            itemsPerPage: 8,
             serverItems: [],
             pages: 0,
             search: "",
             noData: "",
-            columns: ["ProductName", "Product Description", "Price", "Quantity", "Action"]
+            columns: ["Order Id", "Customer Name", "Product Name", "Price", "Quantity", "Category", "Order Status", "Action"]
         };
     },
     mounted() {
         this.loadItems();
     },
     methods: {
-        delete(id) {
-            this.$apiService.delete(`DeleteProduct?ProductId=${id}`,
-                {
-                    headers: { Authorization: localStorage.getItem("token") },
-                })
-                .then((res) => {
-                    console.log(res);
-                    this.loadItems();
-                })
-                .catch((err) => {
-                    console.log(err);
-                })
-        },
-        updateProduct(productId) {
-            this.$router.push(`/addProduct/${productId}`);
-        },
         loadItems() {
             this.$apiService
-                .get(`GetDynamicProductList/${this.page}/${this.itemsPerPage}/?searchText=${this.search}`, {
+                .get(`GetDynamicOrderList/${this.page}/${this.itemsPerPage}/?searchText=${this.search}`, {
                     headers: { Authorization: localStorage.getItem("token") },
                 })
                 .then((res) => {
@@ -123,7 +105,6 @@ export default {
                 });
         },
     }
-
 };
 </script>
 

@@ -2,12 +2,13 @@ import { createRouter, createWebHistory } from "vue-router";
 import register from "../components/register.vue";
 import login from "../components/login.vue";
 import forgotPassword from "../components/forgotPassword.vue";
-import Home from "@/components/home.vue";
+// import Home from "@/components/home.vue";
 import AddProduct from "@/components/addProduct.vue";
 import DisplayProduct from "@/components/displayProduct.vue";
 import Products from "@/components/Products.vue";
 import ProductDetails from "@/components/productDetails.vue";
 import cart from "@/components/cart.vue";
+import OrderList from "@/components/OrderList.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -25,12 +26,6 @@ const router = createRouter({
       path: "/forgotPassword",
       name: "forgotPassword",
       component: forgotPassword,
-    },
-    {
-      path: "/home",
-      name: "home",
-      component: Home,
-      meta: { requiresAuth: true },
     },
     {
       path: "/addProduct",
@@ -66,6 +61,12 @@ const router = createRouter({
       path: "/cart",
       name: "cart",
       component: cart,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/OrderList",
+      name: "OrderList",
+      component: OrderList,
       meta: { requiresAuth: true },
     },
   ],

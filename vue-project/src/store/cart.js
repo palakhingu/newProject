@@ -22,7 +22,7 @@ export const useCartStore = defineStore("cart", {
         } else {
           this.cart[existItem].quantity++;
         }
-      } else {
+      }else {
         this.cart.push({ ...product, quantity: 1 });
       }
       this.saveCartToLocalStorage();

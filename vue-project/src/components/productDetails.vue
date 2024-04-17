@@ -2,7 +2,7 @@
     <v-container class="container">
         <v-row v-for="data in result" align="center" class="elevation-10 row">
             <v-col>
-                <v-img :src="getImageUrl(data.Image)" width="500" height="500" contain></v-img>
+                <v-img :src="getImageUrl(data.Image)" width="400" height="400" contain></v-img>
             </v-col>
             <v-col>
                 <v-card variant="flat">
@@ -13,11 +13,13 @@
                         </div>
                         <div class="text-h4 font-weight-medium mb-3">₹ {{ data.Price }}</div>
                         <div class="text-h6 mb-2">Quantity : {{ data.Quantity }}</div>
-                        <div class="text-h6 mb-2">Manifactured Date: {{ data.ManifacturedAt.split("T")[0] }}</div>
-                        <div class="text-h6 mb-2">Expiry Date: {{ data.ExpireAt.split("T")[0] }}</div>
+                        <div class="text-h6 mb-2">Manifactured Date : {{ data.ManifacturedAt.split("T")[0] }}</div>
+                        <div class="text-h6 mb-2">Expiry Date : {{ data.ExpireAt.split("T")[0] }}</div>
                     </v-card-text>
-                    <v-card-actions>
-                    </v-card-actions>
+                    <div>
+                        <v-btn color="success" prepend-icon="mdi-cart" @click="handleAddToCart(data)"> Add to
+                            cart</v-btn>
+                    </div>
                 </v-card>
             </v-col>
         </v-row>
@@ -25,6 +27,8 @@
 </template>
 
 <script>
+import { useCartStore } from '../store/cart'
+
 export default {
     data() {
         return {
@@ -40,12 +44,13 @@ export default {
             const ProductId = this.$route.params.id;
             if (ProductId) {
 
-                this.$apiService.get(`GetProductById?ProductId=${ProductId}`, {
+                this.$apiService.get(`GetProductById/${ProductId}`, {
                     headers: {
                         'authorization': localStorage.getItem("token")
                     }
                 })
                     .then((res) => {
+                        console.log(res);
                         this.result = res.data
                     })
                     .catch((err) => {
@@ -56,6 +61,16 @@ export default {
         getImageUrl(imagePath) {
             return this.baseUrl + imagePath.replace(/\\/g, '/');
         },
+        handleAddToCart(product) {
+            if (useCartStore().stockOut) {
+                this.$toast.error("Product is out of stock")
+            }
+            else {
+
+                useCartStore().addToCart(product);
+            }
+        }
+
     }
 }
 </script>
@@ -66,8 +81,8 @@ export default {
 }
 
 .row {
-    margin-left: 100px;
-    margin-right: 100px;
+    margin-left: 150px;
+    margin-right: 150px;
     padding: 30px;
 }
 </style>
